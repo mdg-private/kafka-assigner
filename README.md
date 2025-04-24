@@ -1,3 +1,7 @@
+## Internal Apollo fork of kafka-assigner
+
+See [README.apollo.md](README.apollo.md) for details.
+
 kafka-assigner
 ==============
 

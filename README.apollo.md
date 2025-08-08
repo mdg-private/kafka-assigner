@@ -21,7 +21,7 @@ To move partitions to or from brokers in the cluster:
 kafka-topics --bootstrap-server bootstrap.kafka-default.svc.$STACK.apollo-internal:9092 --describe | grep Configs | sed -E 's/^Topic: ([a-z0-9_-]+).*ReplicationFactor: ([0-9]+).*retention.ms=([0-9]+).*$/| \1 | \2 | \3 |/'
 ```
 
-1. Decide if you need to drop retention on topics by inspecting the throughput metrics in the [Kafka Health dashboard](https://app.datadoghq.com/dashboard/w4d-6jd-rtu/kafka-health). High throughput topics == more data to move across the network.
+1. Decide if you need to drop retention on topics by inspecting the throughput metrics in the [Kafka Health dashboard](https://app.datadoghq.com/dashboard/w4d-6jd-rtu/kafka-health). High throughput topics == more data to move across the network and slower repartitioning.
 
    Dropping retention temporarily is relatively safe - the long retention periods are intended to give us time to perform recovery efforts during an incident. As long as the consumer lag for a topic stays low, there is no impact to the lower retention rate.
 

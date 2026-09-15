@@ -75,3 +75,18 @@ kafka-topics --bootstrap-server bootstrap.kafka-default.svc.$STACK.apollo-intern
    - Note: Due to a bug in the UI, the final partition removed continues displaying on the broker details page. You can restart kafka-manager to refresh this list to doublecheck that it's truly been removed.
 
 1. If you are removing a broker: you can now safely shut down the broker for permanent removal or disk replacement.
+
+## Increasing a topic's replication factor
+
+Kafka has no command that sets a replication factor: it is the length of each partition's replica list, so raising it means reassigning every partition with extra replicas appended.
+
+`kafka-plan-replication-factor.py` builds that plan from a `--describe`, keeping each partition's current leader first so no leadership moves, and writes a matching rollback file alongside it:
+
+```shell
+kafka-topics --bootstrap-server <broker>:9092 --describe --topic <topic> \
+  | apollo-scripts/kafka-plan-replication-factor.py 3 <broker ids> <topic>
+```
+
+Execute and verify the plan with `kafka-reassign-partitions` as in [Moving Partitions](#moving-partitions) above, and wait for under-replicated partitions to return to zero before moving on.
+
+There is an [internal runbook](https://apollographql.atlassian.net/wiki/x/DADrrg) with a worked example, including the order to follow when `min.insync.replicas` has to change too.
